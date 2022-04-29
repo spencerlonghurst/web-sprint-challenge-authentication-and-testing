@@ -23,6 +23,7 @@ function checkCredentials (req, res, next) {
       username: req.body.username, 
       password: req.body.password,
     }
+    next()
   }
 }
 
