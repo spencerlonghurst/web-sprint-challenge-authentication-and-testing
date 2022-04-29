@@ -57,8 +57,24 @@ router.post('/register', checkUsernameFree, checkCredentials, (req, res, next) =
 
 
 
-router.post('/login', (req, res) => {
-  res.end('implement login, please!');
+
+router.post('/login', checkCredentials, (req, res, next) => {
+  let { username, password } = req.body
+
+  User.findBy({ username })
+    .then(([user]) => {
+      if (user && bcrypt.compareSync(password, user.password)) {
+        res.status(200).json({
+          message: `welcome ${user.username}`,
+          token: generateToken(user)
+        })
+      } else {
+        next({ status: 401, message: 'Invalid Credentials' })
+      }
+    })
+    .catch(next)
+
+
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -83,5 +99,16 @@ router.post('/login', (req, res) => {
       the response body should include a string exactly as follows: "invalid credentials".
   */
 });
+
+
+
+function generateToken(user) {
+  const payload = {
+    subject: user.id,
+    username: user.username,
+  };
+  const options = { expiresIn: '1d' };
+  return jwt.sign(payload, (JWT_SECRET), options);
+}
 
 module.exports = router;
