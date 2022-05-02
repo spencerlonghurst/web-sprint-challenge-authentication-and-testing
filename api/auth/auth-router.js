@@ -7,7 +7,7 @@ const { checkUsernameFree, checkCredentials } = require('../middleware/auth-midd
 
 
 
-router.post('/register', checkUsernameFree, /* checkCredentials,*/ (req, res, next) => {
+router.post('/register', checkCredentials, checkUsernameFree,  (req, res, next) => {
   console.log('req.body', req.body)
   const { username, password } = req.body;
   const hash = bcrypt.hashSync(password, 8)
@@ -17,7 +17,7 @@ router.post('/register', checkUsernameFree, /* checkCredentials,*/ (req, res, ne
   
   User.add({ username, password: hash })
     .then(newUser => {
-      res.status(201).json({ newUser })
+      res.status(201).json({ ...newUser })
     })
     .catch(next)
 
