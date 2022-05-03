@@ -15,9 +15,9 @@ async function checkUsernameFree(req, res, next) {
 
 function checkCredentials (req, res, next) {
   console.log(req.body.username)
-  if (!req.body.username.trim() || typeof req.body.username !== 'string') {
+  if (!req.body.username || typeof req.body.username !== 'string') {
     next({ status: 400, message: 'username and password required' })
-  } else if (!req.body.password.trim() || typeof req.body.password !== 'string') {
+  } else if (!req.body.password || typeof req.body.password !== 'string') {
     next({ status: 400, message: 'username and password required' })
   } else {
     req.user = {
